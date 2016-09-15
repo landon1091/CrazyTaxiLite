@@ -12,12 +12,16 @@
  */
 let taxiModel = Backbone.Model.extend({
     defaults: {
+        customer: {
+            x: 0,
+            y: 0,
+        },
         taxilocation: {
             x: 0,
             y: 0,
         },
         username: '',
-        fuel: 0,
+        fuel: 10,
         score: 0,
     }
 });
@@ -35,12 +39,22 @@ let taxiView = Backbone.View.extend({
         // this.model.on('add', this.render, this);
     },
     events: {
-        'click #set': 'name',
+        'click #set': 'start',
         'click #Up': 'Up',
         'click #Down': 'Down',
         'click #Left': 'Left',
         'click #Right': 'Right',
-        //    'click #fuel': 'fuel'
+        'click #getcustomer': 'newCustomer',
+    },
+
+    newCustomer: function () {
+        let customer = this.model.get('customer');
+        let randomx = Math.floor((Math.random() * 8) + 1);
+        let randomy = Math.floor((Math.random() * 8) + 1);
+        this.model.set('customer', {
+            x: randomx,
+            y: randomy,
+        })
     },
 
 
@@ -49,6 +63,7 @@ let taxiView = Backbone.View.extend({
         // 1. Get the current object.
         // 2. Increase y by 1.
         // 3. Set taxilocation to the new version.
+
         let position = this.model.get('taxilocation');
         let newY = position.y;
 
@@ -60,8 +75,29 @@ let taxiView = Backbone.View.extend({
             x: position.x,
             y: newY
         });
+        let gas = this.model.get('fuel');
+        gas = gas - 1;
+        if (gas === 0) {
+            console.log("You Lose");
+        }
+        this.model.set('fuel', gas);
 
+        let customercheck = this.model.get('customer');
+        let check = this.model.get('taxilocation');
+
+        if (check.y === customercheck.y && check.x === customercheck.x) {
+            let gas = this.model.get('fuel');
+            let newcusto = this.model.get('customer');
+            newcusto.x = Math.floor((Math.random() * 8) + 1),
+            newcusto.y = Math.floor((Math.random() * 8) + 1),
+            gas = gas + 8;
+            console.log('You are awarded 8 fuel for picking up a customer')
+            this.model.set('customer', newcusto),
+            this.model.set('fuel', gas);
+        }
     },
+
+
     Down: function () {
         let position = this.model.get('taxilocation');
         let newY = position.y;
@@ -73,9 +109,29 @@ let taxiView = Backbone.View.extend({
             x: position.x,
             y: newY
         });
+        let gas = this.model.get('fuel');
+        gas = gas - 1;
+        if (gas === 0) {
+            console.log("You Lose");
+        }
+        this.model.set('fuel', gas);
+        let customercheck = this.model.get('customer');
+        let check = this.model.get('taxilocation');
+        if (check.y === customercheck.y && check.x === customercheck.x) {
+            let gas = this.model.get('fuel');
+            let newcusto = this.model.get('customer');
+            newcusto.x = Math.floor((Math.random() * 8) + 1),
+            newcusto.y = Math.floor((Math.random() * 8) + 1),
+            gas = gas + 8;
+            console.log('You are awarded 8 fuel for picking up a customer')
+            this.model.set('customer', newcusto),
+            this.model.set('fuel', gas);
+        }
+
+
 
     },
- Left: function () {
+    Left: function () {
         let position = this.model.get('taxilocation');
         let newX = position.x;
 
@@ -86,6 +142,26 @@ let taxiView = Backbone.View.extend({
             x: newX,
             y: position.y,
         });
+        let gas = this.model.get('fuel');
+        gas = gas - 1;
+        if (gas === 0) {
+            console.log("You Lose");
+        }
+        this.model.set('fuel', gas);
+        let customercheck = this.model.get('customer');
+        let check = this.model.get('taxilocation');
+        if (check.y === customercheck.y && check.x === customercheck.x) {
+            let gas = this.model.get('fuel');
+            let newcusto = this.model.get('customer');
+            newcusto.x = Math.floor((Math.random() * 8) + 1),
+            newcusto.y = Math.floor((Math.random() * 8) + 1),
+            gas = gas + 8;
+            console.log('You are awarded 8 fuel for picking up a customer')
+            this.model.set('customer', newcusto),
+            this.model.set('fuel', gas);
+        }
+
+
 
     },
     Right: function () {
@@ -99,33 +175,60 @@ let taxiView = Backbone.View.extend({
             x: newX,
             y: position.y,
         });
+        let gas = this.model.get('fuel');
+        gas = gas - 1;
+        if (gas === 0) {
+            console.log("You Lose");
+        }
+        this.model.set('fuel', gas);
+        let customercheck = this.model.get('customer');
+        let check = this.model.get('taxilocation');
+        if (check.y === customercheck.y && check.x === customercheck.x) {
+            let gas = this.model.get('fuel');
+            let newcusto = this.model.get('customer');
+            newcusto.x = Math.floor((Math.random() * 8) + 1),
+            newcusto.y = Math.floor((Math.random() * 8) + 1),
+            gas = gas + 8;
+            console.log('You are awarded 8 fuel for picking up a customer')
+            this.model.set('customer', newcusto),
+            this.model.set('fuel', gas);
+
+        }
+
+
 
     },
 
-    //    fuel: function(){
-    //        this.model.set('fuel', 10);
-    //    },
 
-    name: function () {
-        // Backbone thing
+
+    start: function () {
+
         this.model.set('username', document.querySelector('#username').value);
 
     },
 
     render: function () {
-       
+
 
         let container = document.querySelector('#displays');
 
+        let displayfuel = document.querySelector('#fuel');
+        displayfuel.textContent = "fuel: " + this.model.get('fuel');
+
+        let displaycustomer = document.querySelector('#kcustomer');
+        displaycustomer.textContent = "Customer Location: " + this.model.get('customer').x + ', ' + this.model.get('customer').y;
 
         let displayname = document.querySelector('#display-username');
-        displayname.textContent = this.model.get('username');
+        displayname.textContent = "Username: " + this.model.get('username');
 
         let displayY = document.querySelector('#y-pos');
         displayY.textContent = 'y:' + this.model.get('taxilocation').y;
 
         let displayX = document.querySelector('#x-pos');
         displayX.textContent = 'x:' + this.model.get('taxilocation').x;
+
+        container.appendChild(displaycustomer);
+        container.appendChild(displayfuel);
         container.appendChild(displayX);
         container.appendChild(displayY);
         container.appendChild(displayname);
